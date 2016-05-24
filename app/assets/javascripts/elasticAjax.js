@@ -1,62 +1,88 @@
 $(function() { //shorthand document.ready function
 
-  var searchForm = $('#searchForm');
+  var searchForm = $('.movies');
   var searchInput = $('#movies_query');
   var searchResult = $('.resultList');
 
   searchForm.submit(function(e) {
     e.preventDefault();
-    alert("calling the api");
     call_api();
     return false;
   });
 
   searchInput.keypress(function (e) {
-    searchInput.change();
-  });
-
-  searchInput.change(function() {
-    call_api();
-  });
-
-  function call_api() {
-    var url = "http://0.0.0.0:3000/movies/search";
-    var values = {
+    var url = String(e.currentTarget.baseURI) || "http://0.0.0.0:3000/movies/search";
+    var data = {
       'query': searchInput.val()
     };
 
-    console.log(searchInput.val());
+    call_api(url, data);
+  });
+
+  function call_api(url, data) {
 
     $.ajax({
       url: url,
       type: "POST",
-      data: values,
+      data: data,
       dataType: "json",
+
       success: function (response) {
+        var htmlTemplate = "";
+        var film, highlight, title, description;
 
-        console.log("API Response");
-        console.log(response)
+        if(response.length === 0) {
+          htmlTemplate = notFoundTemplate(data.query);
+          searchResult.html(htmlTemplate); // Place the result into the view
+        }
+        else {
+          console.log(response);
+          console.log(response.length);
+          searchResult.html(""); // Place the result into the view
 
-        response.forEach(function(response) {
-          var entry = response._source;
-          var highlight = response.highlight.description
-          var title = entry.name
-          var description = entry.description
-          var html_template = [
-            "<li>",
-              "<h2>".concat(title, "</h2>"),
-              "<p>".concat(description, "</p>"),
-              "<p>".concat(highlight, "</p>"),
-            "</li>",
-          ].join('\n');
-          console.log(entry);
-          searchResult.html(html_template);
-        });
+          response.forEach(function(responseEntry) {
+            film = responseEntry._source;
+            console.log(film);
+            console.log(responseEntry);
+
+            title = film.name || "";
+            genre = film.gender || "";
+            description = film.description || "";
+            highlight = responseEntry.highlight.description || "";
+
+            htmlTemplate = resultTemplate(title, genre, description, highlight);
+            searchResult.append(htmlTemplate);
+          });
+        }
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus, errorThrown);
       }
     });
   }
+
+  function resultTemplate(title, genre, description, highlight) {
+    var htmlTemplate = [
+      "<li>",
+      "<h2>".concat(title, "</h2>"),
+      "<span><b>".concat(genre, "</b></span>"),
+      "<p>".concat(description, "</p>"),
+      "<p>".concat(highlight, "</p>"),
+      "</li>"
+    ].join('\n');
+
+    return htmlTemplate;
+  }
+
+  function notFoundTemplate(query) {
+    var htmlTemplate = [
+      "<li>",
+      "<p>".concat("No results matched with ", query),
+      "</li>"
+    ].join('\n');
+
+    return htmlTemplate;
+  }
+
 
 });

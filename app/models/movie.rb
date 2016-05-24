@@ -23,7 +23,7 @@ class Movie
       query: {
         multi_match: {
           query: q,
-          fields:  [ "name", "description" ],
+          fields:  [ "name", "gender", "description" ],
           fuzziness: 1,
           prefix_length: 0
         }

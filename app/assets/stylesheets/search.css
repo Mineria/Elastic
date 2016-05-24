@@ -12,6 +12,7 @@ h1 {
   text-align: center;
   font-weight: 400;
   padding: 1em 0;
+  font-family: 'Pacifico', cursive;
 }
 h2, p {
   font-size: 1em;
@@ -32,6 +33,7 @@ h2 {
   list-style: none;
   border: 1px dashed #cecece;
   padding:1.5em 2em;
+  margin-bottom: 1.5em;
 }
 label {
   display:none;
