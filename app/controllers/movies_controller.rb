@@ -3,9 +3,14 @@ class MoviesController < ApplicationController
 
   def search
     q = ""
-    q = params[:movies][:query] if params[:movies]
-    @result = Movie.search(q)  
+    q = params[:query] if params[:query]
 
+    @result = Movie.search(q) # call elasticsearch
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @result }
+    end
   end
 
   # GET /movies

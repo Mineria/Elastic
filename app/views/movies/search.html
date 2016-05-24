@@ -1,13 +1,64 @@
-<%= simple_form_for :movies, url: search_path do |f| %>
-  <%= f.input :query %>
-  <%= f.submit :search %>
-<% end %>
 
-<%= @result.first.highlight.description.first.html_safe %>
+<div class="container">
 
+  <h1>Fastest Search Engine</h1>
+
+  <%= simple_form_for :movies, url: search_path do |f| %>
+    <%= f.input :query, placeholder: "Start typing..." %>
+  <% end %>
+
+  <div class="result">
+    <ul class="resultList">
+      <% if @result %>
+        <%
+        @result.each do |i|
+         puts "Value of local variable is #{i}"
+        end
+        %>
+      <% end %>
+    </ul>
+  </div>
+</div>
 
 <style type="text/css">
-em{
+body {
+  margin:0;
+  padding:0;
+  font-size:16px;
+  font-family: 'Raleway', sans-serif;
+  font-family: 'Pacifico', cursive;
+}
+h1 {
+  font-size: 3em;
+  text-align: center;
+  font-weight: 400;
+  padding: 1em 0;
+}
+.result {
+  max-width:600px;
+  margin: 0 auto;
+  padding:20px;
+}
+.resultList {
+}
+.resultList li {
+  list-style: none;
+  border: 1px dashed #cecece;
+}
+em {
   color: red;
 }
+input {
+  width: 100%;
+  text-align: center;
+  padding:40px 0;
+  font-size: 50px;
+  border:1px solid #cecece;
+  border-left:0;
+  font-family: 'Pacifico', cursive;
+  border-right:0;
+}
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js">
+<script src="/javascripts/elasticAjax.js">
