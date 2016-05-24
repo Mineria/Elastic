@@ -1,5 +1,6 @@
 $(function() { //shorthand document.ready function
 
+  var loader = $('.loader');
   var searchForm = $('.movies');
   var searchInput = $('#movies_query');
   var searchResult = $('.resultList');
@@ -21,6 +22,9 @@ $(function() { //shorthand document.ready function
 
   function call_api(url, data) {
 
+    // Search result empty
+    searchResult.html("");
+
     $.ajax({
       url: url,
       type: "POST",
@@ -30,16 +34,12 @@ $(function() { //shorthand document.ready function
       success: function (response) {
         var htmlTemplate = "";
         var film, highlight, title, description;
-
+ 
         if(response.length === 0) {
           htmlTemplate = notFoundTemplate(data.query);
           searchResult.html(htmlTemplate); // Place the result into the view
         }
         else {
-          console.log(response);
-          console.log(response.length);
-          searchResult.html(""); // Place the result into the view
-
           response.forEach(function(responseEntry) {
             film = responseEntry._source;
             console.log(film);
@@ -57,7 +57,7 @@ $(function() { //shorthand document.ready function
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(textStatus, errorThrown);
-      }
+      },
     });
   }
 
